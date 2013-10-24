@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>Media Menu Unlock</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+        <link href="/media/ppk/metroui/css/modern.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/media/ppk/metroui/css/modern-responsive.css" rel="stylesheet">
+        <script src="/media/ppk/metroui/javascript/dialog.js"></script>
+        <script src="/media/ppk/metroui/javascript/input-control.js"></script>
+    </head>
+    <body class="metrouicss">
+        <!--<button id="unlock" style="font-size:5em;">Unlock</button>-->
+        <div class="message-dialog bg-color-orange fg-color-white">
+            <center>
+            <!--<p><h3 class="fg-color-white">You must enter the correct access code to continue</h3></p><br>-->
+            <form id="unlockform">
+                <div class="input-control password span5">
+                    <input type="password" placeholder="Access code" name="code" />
+                </div>
+                <button class="span5" type="submit">Submit, unlock, and continue</button>
+            </form>
+        </div>
+        <script type="text/javascript">
+            $('#unlockform').submit(function() {
+                $.ajax({
+                    'url': '/media/unlock',
+                    'type': 'POST',
+                    'data': $('#unlockform').serialize(),
+                    'error': function() {
+                        $.Dialog({
+                            'title': 'Error',
+                            'content': '<h3 id="test">Incorrect code; access denied.</h3>',
+                            'buttons': {
+                                'Close': {
+                                    'action': function(){}
+                                }
+                            }
+                        });
+                    },
+                    'success': function() {
+                        window.location = '/media';
+                    }
+                });
+                return false;
+            });
+        </script>
+    </body>
+</html>

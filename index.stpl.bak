@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>Media Menu</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+        <script src="/media/static/js/accordion.js"></script>
+    </head>
+    <body>
+        <style>
+            a, a:visited {
+                text-decoration: none;
+                color: #000000;
+            }
+            ul, li {
+                margin-bottom: 0.6em;
+            }
+        </style>
+        
+        <p>
+            <h2>TV Shows</h2>
+            <ul id="accordion">
+                %for (key, val) in R.items():
+                %globals()[key] = val
+                %end
+                %for series in db.query( Series ).order_by( Series.title ):
+                <li>{{series.title}}
+                    <ul>
+                        %seasons = [ obj.season for obj in db.query( Episode ).filter( Episode.series == series.tag, Episode.season > 0 ).group_by( Episode.season ).all() ]
+                        %for season in seasons:
+                        <li>Season {{season}}
+                            <ul>
+                                %for episode in db.query( Episode ).filter( Episode.series == series.tag, Episode.season == season ).order_by( Episode.tag ):
+                                <li>
+                                    <a href="/media/stream?tag={{episode.tag}}">{{episode.title}}</a>
+                                </li>
+                                %end
+                            </ul>
+                        </li>
+                        %end
+                    </ul>
+                </li>
+                %end
+            </ul>
+        </p>
+        
+        <p>
+            <h2>Movies</h2>
+            <ul>
+                %for movie in db.query( Movie ).order_by( Movie.title ):
+                <li>
+                    <a href="/media/stream?id={{movie.id}}">{{movie.title}}</a>
+                </li>
+                %end
+            </ul>
+        </p>
+        
+        <script type="text/javascript">
+            
+            $(document).ready( function() {
+                $("#accordion").accordion({
+                    container: false
+                });
+            });
+
+            $('a').click(function() {
+                $.ajax({
+                    'url': $(this).attr('href'),
+                    'error': function(){alert('Error encountered!')}
+                });
+                return false;
+            });
+            
+        </script>
+        
+    </body>
+</html>

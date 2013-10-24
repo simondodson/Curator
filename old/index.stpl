@@ -1,0 +1,212 @@
+<html>
+    <head>
+        <title>Media Menu</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+
+        <link href="/media/ppk/metroui/css/modern.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/media/ppk/metroui/css/modern-responsive.css" rel="stylesheet">
+        <script src="/media/ppk/metroui/javascript/accordion.js"></script>
+        <script src="/media/ppk/metroui/javascript/buttonset.js"></script>
+        <script src="/media/ppk/metroui/javascript/dialog.js"></script>
+        <script src="/media/ppk/metroui/javascript/pagecontrol.js"></script>
+    </head>
+    <body class="metrouicss">
+        <div class="page secondary">
+            %if not tag:
+            <div class="page-control" data-role="page-control">
+                <span class="menu-pull"></span>
+                <div class="menu-pull-bar"></div>
+                <ul>
+                    <li class="active"><a href="#tvframe">TV Series</a></li>
+                    <li><a href="#movieframe">Movies</a></li>
+                    <li class="place-right">
+                        <a href="#settingsframe">
+                            <i class="icon-cog fg-color-blue"></i>
+                        </a>
+                    </li>
+                </ul>
+                <div class="frames">
+
+                    <div class="frame active" id="tvframe">
+                        
+                        <ul class="listview fluid">
+                            %alt = True
+                            %for series in db.query( Series ).order_by( Series.title ):
+                                %if alt:
+                                    %color = 'orangeDark'
+                                    %alt = False
+                                %else:
+                                    %color = 'red'
+                                    %alt = True
+                                %end
+                            <li class="bg-color-{{color}} fg-color-white" onclick="window.location = '/media?tag={{series.tag}}'">
+                                <div class="icon">
+                                    <i class="icon-screen fg-color-white"></i>
+                                </div>
+                                <div class="data">
+                                    <h4 class="fg-color-white">{{series.title}}</h4>
+                                    <p>{{series.tag}}</p>
+                                </div>
+                            </li>
+                            %end
+                        </ul>
+                    </div>
+
+                    <div class="frame" id="movieframe">
+                        <ul class="listview fluid">
+                            %for movie in db.query( Movie ).order_by( Movie.title ):
+                            <li class="play bg-color-blueDark fg-color-white" query="?id={{movie.id}}">
+                                <div class="icon">
+                                    <i class="icon-film fg-color-white"></i>
+                                </div>
+                                <div class="data">
+                                    <h4 class="fg-color-white">{{movie.title}}</h4>
+                                </div>
+                            </li>
+                            %end
+                        </ul>
+                    </div>
+
+                    <div class="frame" id="settingsframe">
+                        <form action="/media" method="post" id="settingsform">
+                            <p>
+                                <h2>Play settings</h2>
+                                <div class="button-set" data-role="button-set" id="playset">
+                                    <button class="span5 command-button playbutton" value="1">
+                                        Remote
+                                        <small>Play or add file to queue on remote computer</small>
+                                    </button>
+                                    <button class="span5 command-button playbutton" value="2">
+                                        Local
+                                        <small>Stream file to local computer and play</small>
+                                    </button>
+                                </div>
+                            </p>
+                            <p>
+                                <h2>Error Reporting</h2>
+                                <div class="button-set" data-role="button-set" id="errorset">
+                                    <button class="span5 errorbutton" value="1">
+                                        Show Messages
+                                    </button>
+                                    <button class="span5 errorbutton" value="0">
+                                        Hide Messages
+                                    </button>
+                                </div>
+                            </p>
+                            <br><br>
+                            <p>
+                                <button class="span10 padding5 default" type="submit">Save Settings</button>
+                            </p>
+                            <input type="text" name="playtype" hidden />
+                            <input type="text" name="errorson" hidden />
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+            %else:
+            %series = db.query(Series).filter_by(tag=tag).first()
+            %seasons = [ obj.season for obj in db.query( Episode ).filter( Episode.series == series.tag, Episode.season > 0 ).group_by( Episode.season ).all() ]
+            <div class="page-header">
+                <div class="page-header-content">
+                    <h1>{{series.title}}<small>{{series.tag}}</small></h1>
+                    <a onclick="window.location='/media'" class="back-button big page-back"></a>
+                </div>
+            </div>
+
+            <div class="page-region">
+                <div class="page-region-content">
+                    <ul class="accordion" data-role="accordion">
+                        %for season in seasons:
+                        <li>
+                            <a href="#">Season {{season}}</a>
+                            <div>
+                                <ul class="listview fluid">
+                                    %for episode in db.query( Episode ).filter( Episode.series == series.tag, Episode.season == season ).order_by( Episode.tag ):
+                                    <li class="play" query="?tag={{episode.tag}}">
+                                        <div class="icon">
+                                            <i class="icon-play fg-color-darken" style="height:100%;"></i>
+                                        </div>
+                                        <div class="data">
+                                            <h4>{{episode.tag}}</h4>
+                                            <p>{{episode.title}}</p>
+                                        </div>
+                                    </li>
+                                    %end
+                                </ul>
+                            </div>
+                        </li>
+                        %end
+                    </ul>
+                </div>
+            </div>
+            %end
+        </div>
+        <script type="text/javascript">
+            /*
+            %if settings[0] == 1:
+                $('li.play').click(function() {
+                    $.ajax({
+                        'url': '/media/play' + $(this).attr('query'),
+                        'error': function(){alert('Error encountered!')}
+                    });
+                    return false;
+                });
+            %elif settings[0] == 2:
+                $('li.play').click(function() {
+                    window.location = '/media/stream' + $(this).attr('query');
+                    return false;
+                });
+            %end
+            */
+
+            $('li.play').click(function() {
+                var query = $(this).attr('query');
+                $.Dialog({
+                    'title': 'Choose an action',
+                    'content': 'Would you like to stream it to this computer, or start playing on the server?',
+                    'draggable': false,
+                    'overlay': true,
+                    'closeButton': true,
+                    'buttonsAlign': 'center',
+                    'keepOpened': false,
+                    'position': {'zone': 'center'},
+                    'buttons': {
+                        'Play Remotely': {
+                            'action': function(){
+                                $.ajax({
+                                    'url': '/media/play' + query,
+                                    'error': function(){alert('Error encountered!')}
+                                });
+                            }
+                        },
+                        'Stream Locally': {
+                            'action': function(){
+                                window.location = '/media/stream' + query;
+                            }
+                        }
+                    }
+                });
+            });
+            
+            $('#tagbutton').click(function() {
+                $.ajax({
+                    'url': '/media/stream?tag=' + $('#tagentry').val()
+                });
+            });
+
+            $('.playbutton[value="{{settings[0]}}"]').addClass('active');
+            $('.errorbutton[value="{{settings[1]}}"]').addClass('active');
+
+            $('#settingsform').submit(function() {
+                var playtype = $('.playbutton.active').attr('value');
+                $('[name="playtype"]').val(playtype);
+
+                var errorson = $('.errorbutton.active').attr('value');
+                $('[name="errorson"]').val(errorson);
+            })
+        </script>
+    </body>
+</html>

@@ -1,0 +1,5 @@
+-   type: LabelField
+    text: Choose the VLC executable
+
+-   type: FileOpenField
+    required: true

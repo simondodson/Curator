@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Media Menu</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap -->
+        <link href="/media/ppk/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="/media/ppk/bootstrap/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        
+        %if not tag:
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#hometab" data-toggle="tab"><i class="icon-home icon-black"></i></a></li>
+            <li><a href="#tvtab" data-toggle="tab">TV Shows</a></li>
+            <li><a href="#movietab" data-toggle="tab">Movies</a></li>
+            <li><a href="#settingstab" data-toggle="tab">Settings</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="hometab">
+                <div class="hero-unit">
+                    <center>
+                        <h1><em>Remote Media Menu</em></h1><br>
+                        <p class="text-info">
+                            Welcome to the remote menu for the media management application.<br>Use the tabs above to navigate through the lists of TV shows, movies, and settings.
+                        </p>
+                    </center>
+                </div>
+            </div>
+
+            <div class="tab-pane" id="tvtab">
+                <ul class="media-list">
+                    %for series in db.query( Series ).order_by( Series.title ):
+                    <a href="/media?tag={{series.tag}}">
+                        <div class="well well-small span5"><strong>{{series.tag}}</strong> - <small>{{series.title}}</small></div>
+                    </a>
+                    %end
+                </ul>
+            </div>
+
+            <div class="tab-pane" id="movietab">
+                %for movie in db.query( Movie ).order_by( Movie.title ):
+                <a class="movielink" id="{{movie.id}}" href="#">
+                    <div class="well well-small span5">
+                        <i class="icon-film"></i> <strong>{{movie.title}}</strong>
+                    </div>
+                </a>
+                %end
+            </div>
+
+            <div class="tab-pane" id="settingstab">...</div>
+        </div>
+
+        <div id="moviemodal" class="modal hide fade">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3><em>Launch or Stream?</em></h3>
+            </div>
+            <div class="modal-body">
+                <p>Would you like to play the movie on the remote server, or stream the movie to this computer? A link to this movie's IMDb page may also be available.</p>
+            </div>
+            <div class="modal-footer">
+                <a id="modallaunch" href="#" onclick="$('#moviemodal').modal('hide');" class="btn pull-left">Launch</a>
+                <a id="modalstream" href="#" onclick="$('#moviemodal').modal('hide');" class="btn pull-left visible-desktop" target="_blank">Stream</a>
+                <a id="modalimdb" href="#" class="btn btn-inverse" target="_blank"><i class="icon-search icon-white"></i> IMDb</a>
+                <script type="text/javascript">
+                    $('#modallaunch').click(function() {
+                        $.ajax($(this).attr('href'));
+                        return false;
+                    });
+                </script>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var movies = {
+                %for movie in db.query( Movie ).order_by( Movie.title ):
+                %if not movie.imdb: continue
+                %end
+                '{{movie.id}}': 'http://www.imdb.com/title/{{movie.imdb}}/',
+                %end
+            }
+            $('.movielink').click(function() {
+                var id = $(this).attr('id');
+                var imdb = movies[id];
+
+                $('#modallaunch').attr('href', '/media/play?id=' + id)
+                $('#modalstream').attr('href', '/media/stream?id=' + id)
+
+                if(imdb){
+                    $('#modalimdb').show();
+                    $('#modalimdb').attr('href', imdb);
+                }
+                else{
+                    $('#modalimdb').hide();
+                }
+
+                $('#moviemodal').modal();
+            });
+        </script>
+        %else:
+
+        %series = db.query(Series).filter_by(tag=tag).first()
+        %seasons = [ obj.season for obj in db.query( Episode ).filter( Episode.series == series.tag, Episode.season > 0 ).group_by( Episode.season ).all() ]
+
+        <div class="hero-unit">
+            <h1>{{series.tag}}</h1>
+            <p>{{series.title}}</p>
+        </div>
+
+        <div id="seabar" class="navbar navbar-inverse">
+            <div class="navbar-inner">
+                <a class="brand" href="#">Seasons</a>
+                <ul class="nav">
+                    %for season in seasons:
+                        %if season == 1:
+                            <li class="active">
+                        %else:
+                            <li>
+                        %end
+                    <a href="#s{{season}}">  {{season}}</a></li>
+                    %end
+                </ul>
+            </div>
+        </div>
+
+        %for season in seasons:
+        <div class="well" id="s{{season}}">
+            <h3>Season {{season}}</h3>
+
+            <ul>
+            %for episode in db.query( Episode ).filter( Episode.series == series.tag, Episode.season == season ).order_by( Episode.tag ):
+            <li>
+                <!--<a class="epilink" tag="{{episode.tag}}"><h5>{{episode.title}}</h5></a>-->
+                <button class="btn btn-small epilink" style="margin-bottom:1em;" tag="{{episode.tag}}"><small>{{episode.tag}}</small> <i class="icon-chevron-right"></i> {{episode.title}}</button>
+            </li>
+            %end
+            </ul>
+
+        </div>
+        %end
+
+
+        <div id="tvmodal" class="modal hide fade">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3><em>Launch or Stream?</em></h3>
+            </div>
+            <div class="modal-body">
+                <p>Would you like to play the episode on the remote server, or stream it to this computer? A link to this show's IMDb page may also be available.</p>
+            </div>
+            <div class="modal-footer">
+                <a id="modallaunch" href="#" onclick="$('#tvmodal').modal('hide');" class="btn pull-left">Launch</a>
+                <a id="modalstream" href="#" onclick="$('#tvmodal').modal('hide');" class="btn pull-left visible-desktop" target="_blank">Stream</a>
+                %if series.imdb:
+                <a id="modalimdb" href="http://www.imdb.com/title/{{series.imdb}}/" class="btn btn-inverse" target="_blank"><i class="icon-search icon-white"></i> IMDb</a>
+                %end
+                <script type="text/javascript">
+                    $('#modallaunch').click(function() {
+                        $.ajax($(this).attr('href'));
+                        return false;
+                    });
+                </script>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('.epilink').click(function() {
+                var id = $(this).attr('tag');
+
+                $('#modallaunch').attr('href', '/media/play?tag=' + id)
+                $('#modalstream').attr('href', '/media/stream?tag=' + id)
+
+                $('#tvmodal').modal();
+            });
+
+            $(window).unload(function() {
+                window.location = '/media#tvtab';
+            });
+        </script>
+
+
+        %end
+    </body>
+</html>

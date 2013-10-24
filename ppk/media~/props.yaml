@@ -1,0 +1,118 @@
+first:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: true
+    info: Used to indicate if this is the first execution of the program; if set to true, will execute specific functions on the next restart of the program.
+server-enabled:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: true
+    info: Enables/Disables built-in server for remote control.
+server-port:
+    prompt: !!python/name:tkprops.IntPrompt
+    default: 8080
+    info: Port for the built-in web server to listen on.
+directories:
+    prompt: !!python/name:tkprops.ListPrompt
+    default:
+        - .
+        - !!python/object/apply:os.path.normpath
+            - !!python/object/apply:os.path.expanduser 
+                - ~/media
+    info: Directories to search when rebuilding media cache.
+pattern-episodic:
+    prompt: !!python/name:tkprops.TextPrompt
+    default: '^(([\w\d]{3,})([\d]{2})([\d]{2}(?:-[\d]{2})?))(?: (.*?)[.]([\w\d]+)$)?'
+    info: Regex pattern used for matching episodic files. Matches both a full filename and just a tag.
+pattern-loose:
+    prompt: !!python/name:tkprops.TextPrompt
+    default: '^([\w]{2,5}) '
+    info: Regex pattern used for matching the loose files collected based on tags.
+extensions:
+    prompt: !!python/name:tkprops.ListPrompt
+    default:
+        -   mkv
+        -   avi
+        -   mp4
+        -   3gp
+        -   wmv
+        -   m2ts
+    info: Acceptable file extensions.
+vlc-method:
+    prompt: !!python/name:tkprops.RadioPrompt
+    options:
+        -   VLC Media Player
+            
+            (Opens files in the full media player;
+            
+            requires the "vlc-path" argument.)
+            
+            *Recommended
+        -   pyvlc
+            
+            (Opens files with libvlc in a python-managed
+            
+            window; requires vlc.py or pyvlc plugin)
+    default: 0
+    info: Determines which method to use when opening media files.
+vlc-path:
+    prompt: !!python/name:tkprops.FileOpenPrompt
+    info: VLC media player executable, required to play anything.
+    required: true
+vlc-args:
+    prompt: !!python/name:tkprops.ListPrompt
+    default:
+        -   -f
+        -   --one-instance
+        -   --playlist-enqueue
+        -   --qt-minimal-view
+    info: VLC terminal arguments.
+vlc-enqueue:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: true
+    info: When multiple files are selected to be played, files following the first will be added to the playlist as opposed to being immediately played.
+copy-preserve:
+    prompt: !!python/name:tkprops.RadioPrompt
+    options:
+        -   Prompt every time files are copied
+        -   Never preserve
+        -   Always preserve
+    default: 0
+    info: Options for directory preservation prompting.
+copy-method:
+    prompt: !!python/name:tkprops.RadioPrompt
+    options:
+        -   Windows native shell copy
+        -   Teracopy (Windows only)
+        -   Pure Python (Not the fastest, but should work on all platforms)
+    default: 2
+    info: Method to use for copying files.
+copy-cleanup:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: true
+    info: When this is enabled when a copy operation is cancelled, the already copied files will be deleted. Only applies to the the "Pure Python" copy method.
+collect-loose:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: true
+    info: |
+        If set to true, the program will pick up stray media files in series' folders while rebuilding the cache.
+collect-files:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: true
+    info: Scan and collect file entries from yaml indexes.
+collect-series:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: true
+    info: Scan and collect file series from yaml indexes.
+server-enabled:
+    prompt: !!python/name:tkprops.BoolPrompt
+    default: false
+    info: Enables the internal web server for controlling the menu through another device. Requires bottle.py and a restart to take effect.
+server-port:
+    prompt: !!python/name:tkprops.IntPrompt
+    default: 8080
+    info: Port to bind the webserver to.
+server-unlock:
+    default: '1234'
+    info: Code for unlocking the web server. Not really supposed to be that secure, just prevents non-chalant access.
+testing:
+    prompt: !!python/name:tkprops.ScalePrompt
+    default: 50

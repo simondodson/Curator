@@ -1,0 +1,34 @@
+ERROR:root:Traceback (most recent call last):
+  File "C:\Python33\lib\tkinter\__init__.py", line 1475, in __call__
+    return self.func(*args)
+  File "D:\Dropbox\python\media\__main__.py", line 460, in start
+    import win32api
+ImportError: No module named 'win32api'
+
+Please report all repetitive and/or anomalous errors to spgill@vt.edu
+WARNING:tornado.access:404 GET //jmx-console/HtmlAdaptor (211.90.11.25) 8.00ms
+WARNING:tornado.access:404 GET http://www.google.com/ (221.212.176.26) 2.06ms
+WARNING:tornado.access:404 GET http://www.google.com/intl/zh-CN/ (61.228.22.143) 1.05ms
+WARNING:tornado.access:404 CONNECT mx3.mail2000.com.tw:25 (61.228.22.143) 1.00ms
+WARNING:tornado.access:404 GET http://www.google.com.tw (61.228.22.54) 0.96ms
+WARNING:tornado.access:404 CONNECT mx2.mail2000.com.tw:25 (61.228.22.54) 1.95ms
+WARNING:tornado.access:404 GET /media/ppk/metroui/css/modern.css (127.0.0.1) 2.00ms
+WARNING:tornado.access:404 GET /media/ppk/metroui/css/modern-responsive.css (127.0.0.1) 1.00ms
+WARNING:tornado.access:404 GET /media/ppk/metroui/javascript/dialog.js (127.0.0.1) 1.00ms
+WARNING:tornado.access:404 GET /media/ppk/metroui/javascript/input-control.js (127.0.0.1) 1.00ms
+WARNING:tornado.access:404 GET /media/ppk/bootstrap/css/bootstrap.min.css (127.0.0.1) 1.00ms
+WARNING:tornado.access:404 GET /media/ppk/bootstrap/js/bootstrap.min.js (127.0.0.1) 2.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/css/modern.css (127.0.0.1) 2.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/javascript/input-control.js (127.0.0.1) 2.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/css/modern-responsive.css (127.0.0.1) 2.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/javascript/dialog.js (127.0.0.1) 2.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/css/modern.css (127.0.0.1) 2.00ms
+WARNING:tornado.access:404 HEAD / (54.208.48.228) 2.00ms
+WARNING:tornado.access:404 GET http://www.google.com/ (111.248.114.45) 1.00ms
+WARNING:tornado.access:404 CONNECT mx2.mail2000.com.tw:25 (111.248.114.45) 1.05ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/css/modern.css (127.0.0.1) 15.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/css/modern-responsive.css (127.0.0.1) 2.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/javascript/dialog.js (127.0.0.1) 1.00ms
+ERROR:tornado.access:500 GET /media/ppk/metroui/javascript/input-control.js (127.0.0.1) 1.00ms
+ERROR:tornado.access:500 GET /media/ppk/bootstrap/css/bootstrap.min.css (127.0.0.1) 2.00ms
+ERROR:tornado.access:500 GET /media/ppk/bootstrap/js/bootstrap.min.js (127.0.0.1) 2.00ms
