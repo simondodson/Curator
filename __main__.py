@@ -23,11 +23,12 @@ import os
 import re
 
 import ppk
-import tkprops
-import tkscroll
-import tkmisc
+#import tkprops
+#import tkscroll
+#import tkmisc
 import tooltip
-import tkform
+#import tkform
+from tktools import tkprops, tkscroll, tkmisc, tkform
 
 import num2engl
 import persist
@@ -61,12 +62,13 @@ class Menu(tkinter.Tk):
         super().destroy()
     
     def _setup(self):
-        self.title('Media')
+        self.title('Curator')
         
         self.pool = pool = ppk.Pool()
         pool.include(os.path.join(_path, 'ppk'))
 
-        self.iconphoto(True, pool['i:media/play_alt_2.png'])
+        #self.iconphoto(True, pool['i:media/play_alt_2.png'])
+        self.iconphoto(True, pool['i:curator/icon.png'])
         #self.tk.call('wm', 'iconphoto', self._w, pool['i:/media/play_alt_2.png'], default=True)
 
         base = os.path.expanduser('~/.media')

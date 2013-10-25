@@ -1,0 +1,3 @@
+name: curator
+rev: 1.0
+static: curator~
