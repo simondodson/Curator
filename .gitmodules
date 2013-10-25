@@ -1,3 +1,6 @@
 [submodule "ppk"]
 	path = ppk
 	url = git://github.com/spgill/ppk.git
+[submodule "views/tktools"]
+	path = views/tktools
+	url = git://github.com/spgill/tktools.git
